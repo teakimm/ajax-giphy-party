@@ -14,9 +14,9 @@ async function getGif() {
   const response = await fetch(url);
   const gifData = await response.json();
   //Giphy gives us 50 gifs, choose one randomly
-  const gifUrl = gifData.data[getRandomNumber(0, 50)].images.original.url;
+  const gifUrl = gifData.data[getRandomNumber(0, gifData.data.length)].images.original.url;
 
-  return gifUrl;
+  return { url : gifUrl, searchTerm };
 }
 
 /** return a random number between min and max*/
@@ -28,7 +28,8 @@ function getRandomNumber(min, max) {
 
 function prependGif(url) {
   const gifImage = $("<img>", {
-    src: url,
+    src: url.url,
+    alt: `Gif of "${url.searchTerm}"`,
     class: 'gif'
   });
 
@@ -41,6 +42,7 @@ function prependGif(url) {
 async function getAndShowGif() {
   const gifUrl = await getGif();
   prependGif(gifUrl);
+  $("#search-term").val("");
 }
 
 /** calls getAndShowGif when button is clicked */
